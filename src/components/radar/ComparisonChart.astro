@@ -1,0 +1,323 @@
+---
+import { PRACTICES, AXES, MAX_VALUE } from '../../data/practices';
+
+interface Props {
+  figureNumber?: string;
+  caption?: string;
+}
+
+const {
+  figureNumber = '4.2',
+  caption = 'Interactive comparison. Select a preset or choose practices to overlay.',
+} = Astro.props;
+
+// Serialize data for client-side script via JSON script tag
+const chartData = JSON.stringify({ practices: PRACTICES, axes: AXES, maxValue: MAX_VALUE });
+---
+
+<figure class="radar-figure comparison-figure">
+  <hr class="comparison-rule" />
+
+  <div class="comparison-presets" id="comparison-presets">
+    <button class="comparison-preset active" data-preset="rumba-meditation">Rumba vs. Meditation</button>
+    <button class="comparison-preset" data-preset="jazz-sports">Jazz vs. Team Sports</button>
+    <button class="comparison-preset" data-preset="all-rm">All Choreo-Musical</button>
+    <button class="comparison-preset" data-preset="custom">Custom</button>
+  </div>
+
+  <div class="comparison-custom" id="comparison-custom" style="display: none;"></div>
+
+  <div class="comparison-chart" id="comparison-chart"></div>
+  <div class="comparison-legend" id="comparison-legend"></div>
+
+  <figcaption class="comparison-caption">
+    <strong>Figure {figureNumber}.</strong> {caption}
+  </figcaption>
+</figure>
+
+<!-- Data passed to client script via JSON, not define:vars -->
+<script type="application/json" id="comparison-data" set:html={chartData} />
+
+<script>
+  import {
+    buildGridSVG,
+    polygonPoints,
+    pointsToString,
+    axisAngle,
+    polarToXY,
+  } from './radar-utils';
+
+  interface Practice {
+    name: string;
+    scores: number[];
+    group: string;
+    color: string;
+  }
+
+  interface ChartData {
+    practices: Practice[];
+    axes: string[];
+    maxValue: number;
+  }
+
+  const PRESETS: Record<string, string[]> = {
+    'rumba-meditation': ['Rumba / Bomba', 'Meditation'],
+    'jazz-sports': ['Jazz', 'Team Sports'],
+    'all-rm': ['Capoeira Roda', 'Rumba / Bomba', 'Jazz', 'Social Dance Floor'],
+  };
+
+  function initComparison() {
+    const dataEl = document.getElementById('comparison-data');
+    if (!dataEl?.textContent) return;
+
+    const { practices, axes, maxValue } = JSON.parse(dataEl.textContent) as ChartData;
+    let currentPreset = 'rumba-meditation';
+    let activePracticeNames: string[] = PRESETS['rumba-meditation'];
+
+    const chartContainer = document.getElementById('comparison-chart');
+    const legendContainer = document.getElementById('comparison-legend');
+    const customContainer = document.getElementById('comparison-custom');
+
+    function renderChart() {
+      if (!chartContainer || !legendContainer) return;
+
+      const size = 400;
+      const cx = size / 2;
+      const cy = size / 2;
+      const maxR = 140;
+
+      const active = practices.filter(p => activePracticeNames.includes(p.name));
+
+      let svg = `<svg viewBox="0 0 ${size} ${size}" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:520px;height:auto;display:block;margin:0 auto;">`;
+      svg += buildGridSVG(cx, cy, maxR, axes.length, axes, true, '11');
+
+      // Reference ring label
+      const refPt = polarToXY(cx, cy, (3 / maxValue) * maxR, axisAngle(0, axes.length));
+      svg += `<text x="${refPt.x + 5}" y="${refPt.y - 4}" fill="#555" font-size="8" font-family="'Inter Variable', sans-serif">3</text>`;
+
+      active.forEach(p => {
+        const pts = polygonPoints(p.scores, cx, cy, maxR);
+        svg += `<polygon points="${pointsToString(pts)}" fill="${p.color}" fill-opacity="0.12" stroke="${p.color}" stroke-opacity="0.85" stroke-width="2.5" data-practice="${p.name}" class="comp-poly"/>`;
+        pts.forEach(pt => {
+          svg += `<circle cx="${pt.x.toFixed(1)}" cy="${pt.y.toFixed(1)}" r="2.5" fill="${p.color}" opacity="0.85"/>`;
+        });
+      });
+
+      svg += '</svg>';
+      chartContainer.innerHTML = svg;
+
+      legendContainer.innerHTML = active.map(p =>
+        `<span class="comparison-legend-item"><span class="comparison-legend-swatch" style="background:${p.color}"></span>${p.name}</span>`
+      ).join('');
+
+      // Hover interactions
+      chartContainer.querySelectorAll('.comp-poly').forEach(el => {
+        const poly = el as SVGPolygonElement;
+        poly.style.transition = 'fill-opacity 0.2s, stroke-opacity 0.2s, stroke-width 0.15s';
+        poly.style.cursor = 'pointer';
+
+        poly.addEventListener('mouseenter', () => {
+          chartContainer.querySelectorAll('.comp-poly').forEach(other => {
+            const o = other as SVGPolygonElement;
+            if (o.dataset.practice === poly.dataset.practice) {
+              o.style.fillOpacity = '0.25';
+              o.style.strokeOpacity = '1';
+              o.style.strokeWidth = '3.5';
+            } else {
+              o.style.fillOpacity = '0.04';
+              o.style.strokeOpacity = '0.25';
+              o.style.strokeWidth = '1.5';
+            }
+          });
+        });
+
+        poly.addEventListener('mouseleave', () => {
+          chartContainer.querySelectorAll('.comp-poly').forEach(other => {
+            const o = other as SVGPolygonElement;
+            o.style.fillOpacity = '0.12';
+            o.style.strokeOpacity = '0.85';
+            o.style.strokeWidth = '2.5';
+          });
+        });
+      });
+    }
+
+    function setPreset(preset: string) {
+      currentPreset = preset;
+      document.querySelectorAll('.comparison-preset').forEach(btn =>
+        btn.classList.toggle('active', (btn as HTMLElement).dataset.preset === preset)
+      );
+
+      if (customContainer) {
+        customContainer.style.display = preset === 'custom' ? 'flex' : 'none';
+      }
+
+      if (preset === 'custom') {
+        activePracticeNames = Array.from(
+          customContainer?.querySelectorAll('input:checked') ?? []
+        ).map(cb => (cb as HTMLInputElement).dataset.practice ?? '');
+      } else {
+        activePracticeNames = PRESETS[preset] ?? [];
+      }
+
+      renderChart();
+    }
+
+    // Build custom checkboxes
+    if (customContainer) {
+      customContainer.innerHTML = practices.map(p =>
+        `<label class="comparison-custom-label">
+          <input type="checkbox" data-practice="${p.name}" ${p.group === 'rm' ? 'checked' : ''}>
+          <span class="comparison-custom-swatch" style="background:${p.color}"></span>
+          ${p.name}
+        </label>`
+      ).join('');
+
+      customContainer.querySelectorAll('input').forEach(cb => {
+        cb.addEventListener('change', () => {
+          const checked = Array.from(customContainer.querySelectorAll('input:checked'));
+          if (checked.length <= 4) {
+            activePracticeNames = checked.map(c => (c as HTMLInputElement).dataset.practice ?? '');
+            renderChart();
+          } else {
+            (cb as HTMLInputElement).checked = false;
+          }
+        });
+      });
+    }
+
+    // Preset buttons
+    document.querySelectorAll('.comparison-preset').forEach(btn => {
+      btn.addEventListener('click', () => setPreset((btn as HTMLElement).dataset.preset ?? ''));
+    });
+
+    // Initial render
+    renderChart();
+  }
+
+  document.addEventListener('astro:page-load', initComparison);
+</script>
+
+<style>
+  .comparison-figure {
+    max-width: var(--content-wide, 900px);
+    margin: var(--space-2xl, 4rem) auto;
+    text-align: center;
+  }
+
+  .comparison-rule {
+    border: none;
+    border-top: 1px solid var(--border-subtle, #2a2a2a);
+    margin-bottom: var(--space-xl, 2.5rem);
+  }
+
+  .comparison-rule::after {
+    content: none;
+  }
+
+  .comparison-presets {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+  }
+
+  .comparison-preset {
+    background: var(--bg-surface, #1a1a1a);
+    border: 1px solid var(--border-subtle, #2a2a2a);
+    color: var(--text-muted, #999);
+    padding: 0.4rem 1rem;
+    font-family: var(--font-heading, sans-serif);
+    font-size: 0.8rem;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: all 0.15s ease;
+  }
+
+  .comparison-preset:hover {
+    color: var(--text-body, #ccc);
+    border-color: var(--border-muted, #444);
+  }
+
+  .comparison-preset.active {
+    background: var(--bg-elevated, #252525);
+    color: var(--text-heading, #fff);
+    border-color: var(--border-muted, #555);
+  }
+
+  .comparison-chart {
+    margin: 0 auto;
+  }
+
+  .comparison-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    justify-content: center;
+    margin-top: 1rem;
+    font-size: 0.8rem;
+  }
+
+  .comparison-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    color: var(--text-muted, #aaa);
+    font-family: var(--font-heading, sans-serif);
+  }
+
+  .comparison-legend-swatch {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+  }
+
+  .comparison-custom {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .comparison-custom-label {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-family: var(--font-heading, sans-serif);
+    font-size: 0.78rem;
+    color: var(--text-muted, #888);
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    transition: color 0.15s;
+  }
+
+  .comparison-custom-label:hover {
+    color: var(--text-body, #ccc);
+  }
+
+  .comparison-custom-swatch {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+  }
+
+  .comparison-caption {
+    font-size: 0.8rem;
+    color: var(--text-muted, #808080);
+    line-height: 1.5;
+    margin-top: var(--space-lg, 1.5rem);
+    text-align: left;
+  }
+
+  .comparison-caption strong {
+    color: var(--text-body, #c8c8c8);
+  }
+</style>

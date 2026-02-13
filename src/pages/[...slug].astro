@@ -1,0 +1,28 @@
+---
+import { getCollection, render } from 'astro:content';
+import ChapterLayout from '../layouts/ChapterLayout.astro';
+
+export async function getStaticPaths() {
+  const chapters = await getCollection('chapters');
+  return chapters.map(chapter => ({
+    params: { slug: chapter.id },
+    props: { chapter },
+  }));
+}
+
+const { chapter } = Astro.props;
+const { Content } = await render(chapter);
+
+// Estimate word count from the raw body for reading time
+const wordCount = chapter.body ? chapter.body.split(/\s+/).length : 0;
+---
+
+<ChapterLayout
+  title={chapter.data.title}
+  subtitle={chapter.data.subtitle}
+  chapter={chapter.data.chapter}
+  audioLoop={chapter.data.audioLoop}
+  wordCount={wordCount}
+>
+  <Content />
+</ChapterLayout>

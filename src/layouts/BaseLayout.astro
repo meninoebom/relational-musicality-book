@@ -1,0 +1,40 @@
+---
+import { ViewTransitions } from 'astro:transitions';
+import AudioPlayer from '../components/AudioPlayer.astro';
+import '@fontsource-variable/literata/standard.css';
+import '@fontsource-variable/literata/standard-italic.css';
+import '@fontsource-variable/inter';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+  audioLoop?: string;
+}
+
+const {
+  title,
+  description = 'A short book exploring Afro-diasporic choreo-musical practices as uniquely integrative technologies of remembering.',
+  audioLoop,
+} = Astro.props;
+
+const fullTitle = title === 'Technologies of Remembering'
+  ? title
+  : `${title} — Technologies of Remembering`;
+---
+
+<!doctype html>
+<html lang="en" data-audio-loop={audioLoop}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="author" content="Brandon Zin" />
+    <title>{fullTitle}</title>
+    <ViewTransitions />
+  </head>
+  <body>
+    <slot />
+    <AudioPlayer transition:persist="audio-player" />
+  </body>
+</html>

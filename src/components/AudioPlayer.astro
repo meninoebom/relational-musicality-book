@@ -1,0 +1,226 @@
+---
+// AudioPlayer — persistent across page navigations via transition:persist
+// Uses Web Audio API for sample-accurate crossfading between chapter loops.
+---
+
+<div class="audio-player" id="audio-player" aria-label="Ambient audio player">
+  <button
+    class="audio-toggle"
+    id="audio-toggle"
+    type="button"
+    aria-label="Toggle ambient audio"
+    title="Toggle ambient audio"
+  >
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+      <path class="audio-wave audio-wave-1" d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+      <path class="audio-wave audio-wave-2" d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+    </svg>
+  </button>
+</div>
+
+<script>
+  // This script runs once (component is transition:persist).
+  // It listens for astro:after-swap to detect chapter changes.
+
+  const FADE_DURATION = 2; // seconds
+
+  let audioCtx: AudioContext | null = null;
+  let isActive = false;
+  let currentSrc = '';
+
+  // Two audio elements for ping-pong crossfade
+  const audioA = new Audio();
+  const audioB = new Audio();
+  audioA.loop = true;
+  audioB.loop = true;
+  audioA.preload = 'auto';
+  audioB.preload = 'auto';
+
+  let gainA: GainNode | null = null;
+  let gainB: GainNode | null = null;
+  let activeSlot: 'A' | 'B' = 'A';
+
+  function getActiveAudio() { return activeSlot === 'A' ? audioA : audioB; }
+  function getInactiveAudio() { return activeSlot === 'A' ? audioB : audioA; }
+  function getActiveGain() { return activeSlot === 'A' ? gainA : gainB; }
+  function getInactiveGain() { return activeSlot === 'A' ? gainB : gainA; }
+
+  function initAudioContext() {
+    if (audioCtx) return;
+    audioCtx = new AudioContext();
+
+    gainA = audioCtx.createGain();
+    gainB = audioCtx.createGain();
+    gainA.gain.value = 0;
+    gainB.gain.value = 0;
+
+    const sourceA = audioCtx.createMediaElementSource(audioA);
+    const sourceB = audioCtx.createMediaElementSource(audioB);
+    sourceA.connect(gainA).connect(audioCtx.destination);
+    sourceB.connect(gainB).connect(audioCtx.destination);
+  }
+
+  function getAudioLoopFromPage(): string {
+    return document.documentElement.getAttribute('data-audio-loop') || '';
+  }
+
+  function crossfadeTo(newSrc: string) {
+    if (!audioCtx || !gainA || !gainB) return;
+
+    const now = audioCtx.currentTime;
+    const outGain = getActiveGain()!;
+    const inGain = getInactiveGain()!;
+    const inAudio = getInactiveAudio();
+    const outAudio = getActiveAudio();
+
+    // Set up incoming audio
+    inAudio.src = newSrc;
+    inAudio.load();
+    inGain.gain.setValueAtTime(0, now);
+    inGain.gain.linearRampToValueAtTime(1, now + FADE_DURATION);
+
+    // Fade out current
+    outGain.gain.setValueAtTime(outGain.gain.value, now);
+    outGain.gain.linearRampToValueAtTime(0, now + FADE_DURATION);
+
+    inAudio.play().catch(() => {});
+
+    // Clean up outgoing after fade completes
+    setTimeout(() => {
+      outAudio.pause();
+      outAudio.src = '';
+      outAudio.load();
+    }, FADE_DURATION * 1000 + 100);
+
+    // Swap active slot
+    activeSlot = activeSlot === 'A' ? 'B' : 'A';
+    currentSrc = newSrc;
+  }
+
+  function startPlayback(src: string) {
+    if (!audioCtx || !gainA || !gainB) return;
+
+    const audio = getActiveAudio();
+    const gain = getActiveGain()!;
+
+    audio.src = src;
+    audio.load();
+    gain.gain.setValueAtTime(0, audioCtx.currentTime);
+    gain.gain.linearRampToValueAtTime(1, audioCtx.currentTime + FADE_DURATION);
+    audio.play().catch(() => {});
+    currentSrc = src;
+  }
+
+  function stopPlayback() {
+    if (!audioCtx || !gainA || !gainB) return;
+
+    const now = audioCtx.currentTime;
+    const gain = getActiveGain()!;
+    const audio = getActiveAudio();
+
+    gain.gain.setValueAtTime(gain.gain.value, now);
+    gain.gain.linearRampToValueAtTime(0, now + FADE_DURATION);
+
+    setTimeout(() => {
+      audio.pause();
+      audio.src = '';
+      audio.load();
+    }, FADE_DURATION * 1000 + 100);
+
+    currentSrc = '';
+  }
+
+  function handleChapterChange() {
+    const newLoop = getAudioLoopFromPage();
+
+    if (!isActive) return; // User has audio muted, nothing to do
+
+    if (!newLoop) {
+      // Page has no audio loop — fade out
+      if (currentSrc) stopPlayback();
+    } else if (newLoop !== currentSrc) {
+      // Different loop — crossfade
+      if (currentSrc) {
+        crossfadeTo(newLoop);
+      } else {
+        startPlayback(newLoop);
+      }
+    }
+    // Same loop — keep playing, no action needed
+  }
+
+  function updateToggleUI() {
+    const toggle = document.getElementById('audio-toggle');
+    if (toggle) {
+      toggle.setAttribute('data-active', String(isActive));
+      toggle.setAttribute('aria-label', isActive ? 'Mute ambient audio' : 'Play ambient audio');
+    }
+  }
+
+  // Toggle handler
+  document.getElementById('audio-toggle')?.addEventListener('click', () => {
+    initAudioContext();
+
+    // Resume context on user interaction (autoplay policy)
+    if (audioCtx?.state === 'suspended') {
+      audioCtx.resume();
+    }
+
+    isActive = !isActive;
+    updateToggleUI();
+
+    if (isActive) {
+      const loop = getAudioLoopFromPage();
+      if (loop) startPlayback(loop);
+    } else {
+      stopPlayback();
+    }
+  });
+
+  // Listen for View Transition navigation (persisted element)
+  document.addEventListener('astro:after-swap', handleChapterChange);
+</script>
+
+<style>
+  .audio-player {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    z-index: 90;
+  }
+
+  .audio-toggle {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-surface, #1a1a1a);
+    border: 1px solid var(--border-subtle, #2a2a2a);
+    border-radius: 50%;
+    color: var(--text-muted, #808080);
+    cursor: pointer;
+    transition: color 0.2s ease, border-color 0.2s ease;
+  }
+
+  .audio-toggle:hover,
+  .audio-toggle:focus-visible {
+    color: var(--accent-gold, #D4A017);
+    border-color: var(--accent-gold, #D4A017);
+    outline: none;
+  }
+
+  .audio-toggle[data-active="true"] {
+    color: var(--accent-gold, #D4A017);
+  }
+
+  .audio-toggle[data-active="true"] .audio-wave {
+    opacity: 1;
+  }
+
+  .audio-wave {
+    opacity: 0.3;
+    transition: opacity 0.3s ease;
+  }
+</style>

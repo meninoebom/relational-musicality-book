@@ -1,0 +1,70 @@
+---
+// Sidenote — margin notes on wide screens, inline notes on narrow
+interface Props {
+  id: string;
+}
+
+const { id } = Astro.props;
+---
+
+<span class="sidenote-wrapper">
+  <label class="sidenote-toggle" for={`sn-${id}`} aria-label="Toggle note">*</label>
+  <input class="sidenote-checkbox" type="checkbox" id={`sn-${id}`} />
+  <span class="sidenote">
+    <slot />
+  </span>
+</span>
+
+<style>
+  .sidenote-wrapper {
+    position: relative;
+  }
+
+  .sidenote-toggle {
+    cursor: pointer;
+    color: var(--accent-gold);
+    font-weight: 700;
+    vertical-align: super;
+    font-size: 0.75em;
+    line-height: 0;
+    margin-left: 1px;
+  }
+
+  .sidenote-checkbox {
+    display: none;
+  }
+
+  .sidenote {
+    font-size: var(--text-sm);
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+
+  /* Wide screens: margin note */
+  @media (min-width: 1100px) {
+    .sidenote {
+      position: absolute;
+      right: calc(-1 * (var(--content-max, 1100px) - var(--content-width)) / 2 - 1rem);
+      width: 200px;
+      top: 0;
+    }
+
+    .sidenote-toggle {
+      display: none;
+    }
+  }
+
+  /* Narrow screens: toggleable inline note */
+  @media (max-width: 1099px) {
+    .sidenote {
+      display: none;
+      border-left: 2px solid var(--accent-gold);
+      padding: 0.5rem 0 0.5rem 1rem;
+      margin: 0.5rem 0;
+    }
+
+    .sidenote-checkbox:checked + .sidenote {
+      display: block;
+    }
+  }
+</style>

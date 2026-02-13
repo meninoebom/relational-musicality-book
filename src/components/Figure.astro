@@ -1,0 +1,38 @@
+---
+// Figure — <figure> + <figcaption> wrapper for images and diagrams
+interface Props {
+  number: string;
+  caption: string;
+  alt?: string;
+}
+
+const { number, caption, alt } = Astro.props;
+---
+
+<figure class="book-figure">
+  <slot />
+  <figcaption>
+    <strong>Figure {number}.</strong> {caption}
+  </figcaption>
+</figure>
+
+<style>
+  .book-figure {
+    margin: var(--space-2xl) 0;
+  }
+
+  .book-figure :global(img) {
+    border-radius: 4px;
+  }
+
+  figcaption {
+    font-size: var(--text-sm);
+    color: var(--text-muted);
+    line-height: 1.5;
+    margin-top: var(--space-md);
+  }
+
+  figcaption strong {
+    color: var(--text-body);
+  }
+</style>

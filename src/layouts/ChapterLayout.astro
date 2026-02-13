@@ -1,0 +1,36 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import ChapterNav from '../components/ChapterNav.astro';
+import ChapterProgress from '../components/ChapterProgress.astro';
+import ScrollReveal from '../components/ScrollReveal.astro';
+import '../styles/chapter.css';
+
+interface Props {
+  title: string;
+  subtitle?: string;
+  chapter: number;
+  audioLoop?: string;
+  wordCount: number;
+}
+
+const { title, subtitle, chapter, audioLoop, wordCount } = Astro.props;
+
+const readingTime = Math.max(1, Math.round(wordCount / 200));
+---
+
+<BaseLayout title={title} audioLoop={audioLoop}>
+  <ChapterProgress />
+  <article class="chapter">
+    <header class="chapter-header">
+      <p class="chapter-number">Chapter {chapter}</p>
+      <h1 class="chapter-title">{title}</h1>
+      {subtitle && <p class="chapter-subtitle">{subtitle}</p>}
+      <p class="chapter-meta">{readingTime} min read</p>
+    </header>
+    <div class="chapter-content">
+      <slot />
+    </div>
+    <ChapterNav current={chapter} />
+  </article>
+  <ScrollReveal />
+</BaseLayout>

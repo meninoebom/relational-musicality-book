@@ -1,0 +1,57 @@
+---
+// Thin progress bar at top of page, excluded from view transitions
+---
+
+<div
+  class="chapter-progress"
+  id="chapter-progress"
+  role="progressbar"
+  aria-label="Reading progress"
+  aria-valuemin="0"
+  aria-valuemax="100"
+  aria-valuenow="0"
+  style="view-transition-name: progress-bar;"
+>
+  <div class="chapter-progress-fill" id="chapter-progress-fill"></div>
+</div>
+
+<script>
+  function initProgress() {
+    const fill = document.getElementById('chapter-progress-fill');
+    const bar = document.getElementById('chapter-progress');
+    if (!fill || !bar) return;
+
+    function updateProgress() {
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = docHeight > 0 ? Math.min(100, (scrollTop / docHeight) * 100) : 0;
+      fill.style.width = `${progress}%`;
+      bar.setAttribute('aria-valuenow', String(Math.round(progress)));
+    }
+
+    window.addEventListener('scroll', updateProgress, { passive: true });
+    updateProgress();
+  }
+
+  // Run on initial load and after View Transition navigation
+  document.addEventListener('astro:page-load', initProgress);
+</script>
+
+<style>
+  .chapter-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: transparent;
+    z-index: 100;
+  }
+
+  .chapter-progress-fill {
+    height: 100%;
+    width: 0%;
+    background: var(--accent-gold);
+    transition: width 50ms linear;
+  }
+</style>

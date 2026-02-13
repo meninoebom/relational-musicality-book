@@ -1,0 +1,41 @@
+---
+import { AXES } from '../../data/practices';
+import { buildGridSVG, buildPolygonSVG } from './radar-utils';
+
+interface Props {
+  name: string;
+  scores: number[];
+  color: string;
+  size?: number;
+  showLabels?: boolean;
+  labelSize?: string;
+}
+
+const {
+  name,
+  scores,
+  color,
+  size = 200,
+  showLabels = true,
+  labelSize = '7.5',
+} = Astro.props;
+
+const cx = size / 2;
+const cy = size / 2;
+const maxR = size * 0.35;
+const ariaLabel = `Radar chart for ${name}. ${AXES.map((a, i) => `${a}: ${scores[i]}`).join(', ')}`;
+
+const gridSVG = buildGridSVG(cx, cy, maxR, AXES.length, AXES, showLabels, labelSize);
+const polygonSVG = buildPolygonSVG(scores, cx, cy, maxR, color, 0.25, 0.85, 2);
+---
+
+<svg
+  viewBox={`0 0 ${size} ${size}`}
+  role="img"
+  aria-label={ariaLabel}
+  xmlns="http://www.w3.org/2000/svg"
+  style={`width: 100%; max-width: ${size}px; height: auto; display: block;`}
+>
+  <Fragment set:html={gridSVG} />
+  <Fragment set:html={polygonSVG} />
+</svg>

@@ -1,0 +1,81 @@
+---
+import { getCollection } from 'astro:content';
+
+interface Props {
+  current: number;
+}
+
+const { current } = Astro.props;
+
+const allChapters = await getCollection('chapters');
+const sorted = allChapters.sort((a, b) => a.data.chapter - b.data.chapter);
+
+const currentIndex = sorted.findIndex(ch => ch.data.chapter === current);
+const prev = currentIndex > 0 ? sorted[currentIndex - 1] : null;
+const next = currentIndex < sorted.length - 1 ? sorted[currentIndex + 1] : null;
+---
+
+<nav class="chapter-nav" aria-label="Chapter navigation">
+  {prev ? (
+    <a href={`/${prev.id}`} class="chapter-nav-link chapter-nav-prev">
+      <span class="chapter-nav-direction">Previous</span>
+      <span class="chapter-nav-title">{prev.data.title}</span>
+    </a>
+  ) : (
+    <a href="/" class="chapter-nav-link chapter-nav-prev">
+      <span class="chapter-nav-direction">Back to</span>
+      <span class="chapter-nav-title">Cover</span>
+    </a>
+  )}
+  {next && (
+    <a href={`/${next.id}`} class="chapter-nav-link chapter-nav-next">
+      <span class="chapter-nav-direction">Next</span>
+      <span class="chapter-nav-title">{next.data.title}</span>
+    </a>
+  )}
+</nav>
+
+<style>
+  .chapter-nav {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-lg);
+    margin-top: var(--space-3xl);
+    padding-top: var(--space-xl);
+    border-top: 1px solid var(--border-subtle);
+  }
+
+  .chapter-nav-link {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    text-decoration: none;
+    max-width: 50%;
+  }
+
+  .chapter-nav-link:hover .chapter-nav-title {
+    color: var(--accent-gold);
+  }
+
+  .chapter-nav-next {
+    margin-left: auto;
+    text-align: right;
+  }
+
+  .chapter-nav-direction {
+    font-family: var(--font-heading);
+    font-size: var(--text-xs);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+  }
+
+  .chapter-nav-title {
+    font-family: var(--font-heading);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--text-body);
+    transition: color var(--duration-fast) ease;
+  }
+</style>
