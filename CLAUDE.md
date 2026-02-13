@@ -2,7 +2,7 @@
 
 ## What This Is
 
-A short web book by Brandon Zin exploring Afro-diasporic choreo-musical practices as uniquely integrative "technologies of remembering." Built with Astro + MDX.
+A short web book by Brandon Brown exploring Afro-diasporic choreo-musical practices as uniquely integrative "technologies of remembering." Built with Astro + MDX.
 
 ## Stack
 
