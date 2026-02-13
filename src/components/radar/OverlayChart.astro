@@ -1,0 +1,71 @@
+---
+import type { Practice } from '../../data/practices';
+import { AXES } from '../../data/practices';
+import { buildGridSVG, buildPolygonSVG } from './radar-utils';
+
+interface Props {
+  practices: Practice[];
+  size?: number;
+}
+
+const { practices, size = 340 } = Astro.props;
+
+const cx = size / 2;
+const cy = size / 2;
+const maxR = size * 0.32;
+
+const gridSVG = buildGridSVG(cx, cy, maxR, AXES.length, AXES, true, '9');
+const polygonsSVG = practices
+  .map(p => buildPolygonSVG(p.scores, cx, cy, maxR, p.color, 0.12, 0.7, 1.5))
+  .join('');
+
+const legendY = size - 20;
+const legendSpacing = 90;
+const legendStart = cx - ((practices.length - 1) * legendSpacing) / 2;
+
+const ariaLabel = `Overlay radar chart comparing ${practices.map(p => p.name).join(', ')}`;
+---
+
+<svg
+  viewBox={`0 0 ${size} ${size + 10}`}
+  role="img"
+  aria-label={ariaLabel}
+  xmlns="http://www.w3.org/2000/svg"
+  class="overlay-chart"
+>
+  <Fragment set:html={gridSVG} />
+  <Fragment set:html={polygonsSVG} />
+
+  {practices.map((p, i) => (
+    <g>
+      <rect
+        x={legendStart + i * legendSpacing - 4}
+        y={legendY - 5}
+        width="8"
+        height="8"
+        rx="1"
+        fill={p.color}
+        opacity="0.7"
+      />
+      <text
+        x={legendStart + i * legendSpacing + 10}
+        y={legendY + 2}
+        fill="#999"
+        font-size="7.5"
+        font-family="'Inter Variable', -apple-system, system-ui, sans-serif"
+      >
+        {p.name}
+      </text>
+    </g>
+  ))}
+</svg>
+
+<style>
+  .overlay-chart {
+    width: 100%;
+    max-width: 460px;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+  }
+</style>

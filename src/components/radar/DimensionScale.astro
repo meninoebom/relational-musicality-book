@@ -1,0 +1,134 @@
+---
+import type { Practice } from '../../data/practices';
+import { AXES, AXIS_SUBTITLES, MAX_VALUE } from '../../data/practices';
+
+interface Props {
+  dimensionIndex: number;
+  practices: Practice[];
+}
+
+const { dimensionIndex, practices } = Astro.props;
+
+const axisName = AXES[dimensionIndex];
+const axisSubtitle = AXIS_SUBTITLES[dimensionIndex];
+
+const W = 600;
+const H = 140;
+const PAD_LEFT = 20;
+const PAD_RIGHT = 20;
+const TRACK_Y = 55;
+const TRACK_W = W - PAD_LEFT - PAD_RIGHT;
+
+function scoreToX(score: number): number {
+  return PAD_LEFT + (score / MAX_VALUE) * TRACK_W;
+}
+
+// Split into RM (above line) and other (below line)
+const rmPractices = practices.filter(p => p.group === 'rm');
+const otherPractices = practices.filter(p => p.group === 'other');
+
+// Stack practices at same score with slight offset
+function stackItems(items: Practice[], yBase: number, yDir: number) {
+  const byScore = new Map<number, Practice[]>();
+  for (const p of items) {
+    const s = p.scores[dimensionIndex];
+    if (!byScore.has(s)) byScore.set(s, []);
+    byScore.get(s)!.push(p);
+  }
+
+  const result: { practice: Practice; x: number; dotY: number; labelY: number }[] = [];
+  for (const [score, group] of byScore) {
+    const x = scoreToX(score);
+    group.forEach((p, i) => {
+      const dotY = TRACK_Y + yDir * (8 + i * 5);
+      const labelY = TRACK_Y + yDir * (12 + i * 16 + 12);
+      result.push({ practice: p, x, dotY, labelY });
+    });
+  }
+  return result;
+}
+
+const rmItems = stackItems(rmPractices, TRACK_Y, -1);
+const otherItems = stackItems(otherPractices, TRACK_Y, 1);
+
+const ariaLabel = `${axisName} dimension scale. ${practices.map(p => `${p.name}: ${p.scores[dimensionIndex]}`).join(', ')}`;
+---
+
+<svg
+  viewBox={`0 0 ${W} ${H}`}
+  role="img"
+  aria-label={ariaLabel}
+  xmlns="http://www.w3.org/2000/svg"
+  class="dimension-scale"
+>
+  <!-- Track line -->
+  <line
+    x1={PAD_LEFT}
+    y1={TRACK_Y}
+    x2={W - PAD_RIGHT}
+    y2={TRACK_Y}
+    stroke="#444"
+    stroke-width="1"
+  />
+
+  <!-- Scale ticks -->
+  {[...Array(MAX_VALUE + 1)].map((_, i) => (
+    <line
+      x1={scoreToX(i)}
+      y1={TRACK_Y - 3}
+      x2={scoreToX(i)}
+      y2={TRACK_Y + 3}
+      stroke="#555"
+      stroke-width="0.8"
+    />
+  ))}
+
+  <!-- Low / High labels -->
+  <text x={PAD_LEFT} y={TRACK_Y + 18} fill="#555" font-size="7" font-family="'Inter Variable', -apple-system, system-ui, sans-serif" text-anchor="start">Low</text>
+  <text x={W - PAD_RIGHT} y={TRACK_Y + 18} fill="#555" font-size="7" font-family="'Inter Variable', -apple-system, system-ui, sans-serif" text-anchor="end">High</text>
+
+  <!-- RM practices (above the line) -->
+  {rmItems.map(({ practice: p, x, dotY, labelY }) => (
+    <g>
+      <circle cx={x} cy={dotY} r="4" fill={p.color} opacity="0.85" />
+      <text
+        x={x}
+        y={labelY}
+        fill={p.color}
+        font-size="7.5"
+        font-family="'Inter Variable', -apple-system, system-ui, sans-serif"
+        text-anchor="middle"
+        opacity="0.9"
+      >
+        {p.name}
+      </text>
+    </g>
+  ))}
+
+  <!-- Other practices (below the line) -->
+  {otherItems.map(({ practice: p, x, dotY, labelY }) => (
+    <g>
+      <circle cx={x} cy={dotY} r="3.5" fill={p.color} opacity="0.5" />
+      <text
+        x={x}
+        y={labelY}
+        fill="#777"
+        font-size="7"
+        font-family="'Inter Variable', -apple-system, system-ui, sans-serif"
+        text-anchor="middle"
+      >
+        {p.name}
+      </text>
+    </g>
+  ))}
+</svg>
+
+<style>
+  .dimension-scale {
+    width: 100%;
+    max-width: 650px;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+  }
+</style>

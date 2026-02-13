@@ -74,26 +74,44 @@ This is what "relational" means in practice. The self is porous. Your state is r
 
 ---
 
-## The Comparison
+## A Thought Experiment
 
-Here's what these six principles make visible when we set the five choreo-musical forms alongside other technologies of remembering.
+Here's a mental exercise. Not data. Not even a qualitative study. Just a way of thinking out loud about what makes these forms distinctive — and what binds them together.
 
-Every practice on this list is valuable. Meditation is a profound technology for restoring interiority. Books are extraordinary tools for meaning-making across time. Team sports build embodied coordination. Psychotherapy heals fragmented inner life. These aren't lesser practices.
+Imagine mapping any practice that integrates human beings across five dimensions: **embodiment** (the body as a site of knowing), **relationality** (real-time connection between people), **interiority** (access to inner experience), **emergence** (creating together in the moment), and **meaning-making** (understanding and transmissible knowledge).
 
-But they specialize. They restore one or two dimensions of integration while leaving others collapsed.
+Every technology of remembering touches some of these dimensions. Meditation goes deep on interiority. Team sports produce embodiment and relationality. Literature excels at meaning-making. These are real, valuable practices. The question isn't which is better. The question is: what does the *shape* look like?
 
-The five choreo-musical forms don't specialize. They operate across all five dimensions — embodiment, relationality, interiority, emergence, and meaning-making — simultaneously. Not by combining separate practices, but because they were never separated.
+import OverlayChart from '../components/radar/OverlayChart.astro';
+import DimensionScale from '../components/radar/DimensionScale.astro';
+import Figure from '../components/Figure.astro';
+import { RM_PRACTICES, OTHER_PRACTICES, PRACTICES } from '../data/practices';
 
-The radar charts below visualize this. Each practice is scored across five dimensions, and the shape tells the story. The choreo-musical forms produce full, round shapes — nearly filling the space. The specialized practices produce spiky, lopsided shapes — strong in one direction, collapsed in others.
+<Figure number="4.1" caption="Five choreo-musical forms mapped across five dimensions. Notice the full, similar shapes — these practices fill the space rather than specializing.">
+  <OverlayChart practices={RM_PRACTICES} />
+</Figure>
 
-This is qualitative assessment, not measurement. Any score could be argued differently. The point isn't the precision — it's the pattern. Full shapes versus spiky shapes. Integration versus specialization.
+The five choreo-musical forms produce full shapes. They don't spike in one direction and collapse in another. Capoeira, the social dance floor, jazz, rumba — they all fill out across embodiment, relationality, interiority, emergence, and meaning-making. Not identically, but similarly. That similarity is the signal. That's what makes them a family.
 
-import SmallMultiples from '../components/radar/SmallMultiples.astro';
-import ComparisonChart from '../components/radar/ComparisonChart.astro';
+<Figure number="4.2" caption="Other technologies of remembering. Each is valuable — but each specializes, producing spiky shapes rather than full ones.">
+  <OverlayChart practices={OTHER_PRACTICES} />
+</Figure>
 
-<SmallMultiples />
+Now look at what happens when we zoom in on a single dimension.
 
-<ComparisonChart />
+<Figure number="4.3" caption="Emergence: where practices fall on the dimension of creating together in the moment.">
+  <DimensionScale dimensionIndex={0} practices={PRACTICES} />
+</Figure>
+
+The choreo-musical forms cluster at the top of the emergence scale. This isn't coincidental — emergence is what they're *for*. The roda, the dance floor, the jazz combo, the rumba — these are systems designed to produce something that no individual participant planned. Other practices can produce emergence (team sports, psychedelics), but it's incidental to their structure, not central.
+
+<Figure number="4.4" caption="Embodiment: the body as a site of knowing.">
+  <DimensionScale dimensionIndex={3} practices={PRACTICES} />
+</Figure>
+
+Embodiment tells a more nuanced story. Some other practices score just as high here — yoga, team sports, protest marches all engage the body deeply. What distinguishes the choreo-musical forms isn't that they're *more* embodied, but that embodiment is integrated with every other dimension simultaneously. The body isn't just moving; it's relating, creating, meaning-making, and accessing interiority — all at once.
+
+This is the pattern. Not dominance on any single dimension, but consistent fullness across all of them. That's what "integration" means in practice — and it's what makes these forms hard to see from within a paradigm that separates mind from body, individual from collective, art from governance.
 
 ## The Pre-Disciplinary Claim
 
