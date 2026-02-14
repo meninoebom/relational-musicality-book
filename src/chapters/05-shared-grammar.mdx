@@ -1,7 +1,7 @@
 ---
 title: "A Shared Grammar"
 subtitle: "Six principles that recur across all five forms — and what they reveal"
-chapter: 4
+chapter: 5
 ---
 
 Five forms. Different instruments, different movement vocabularies, different histories, different communities. A berimbau is not a turntable is not a piano is not a tumbadora is not a barril. Capoeira developed in Brazil; bomba in Puerto Rico; jazz in the United States; rumba in Cuba. The social dance floor is global now, but its roots are in Afro-diasporic sound system culture.
@@ -74,6 +74,34 @@ This is what "relational" means in practice. The self is porous. Your state is r
 
 ---
 
+## A Protocol Stack
+
+Six principles. But principles are things you observe. If you wanted to *design* a relational container — to build one from scratch, or to evaluate whether an existing one is working — you'd need something more specific. Not just "what do these forms have in common?" but "what would I need to specify?"
+
+Here's an attempt. Eight layers, from the most foundational to the most abstract. Think of it as a stack — each layer depends on the ones beneath it.
+
+**Layer 1: Time base.** Every one of these forms starts with shared time. A pulse, a tempo, a rhythmic subdivision — or in some cases, an emergent entrainment where the group finds a shared pulse together. Without a shared timebase, nothing else works. This is the foundation. It's why the buleador is steady, why the DJ's beat never stops, why a jazz tune begins with someone counting off.
+
+**Layer 2: Roles.** Who does what? Lead and follow. Solo and chorus. Rhythm and melody. Foundation and improvisation. The roles don't have to be fixed — in fact, the best containers assume they'll rotate — but at any given moment, the distribution of functions has to be clear enough that people know how to participate.
+
+**Layer 3: Signal vocabulary.** What gestures, accents, calls, breaks, or cues carry meaning inside the container? In capoeira, a *chamada* means something specific. On a dance floor, a breakdown signals a shift in energy. In jazz, a nod from the pianist to the bassist means "take it." These are the communicative atoms of the system — and they have to be shared, or the container fragments.
+
+**Layer 4: Constraint grammar.** What's allowed? What's off-limits? What's the relationship between the two? This is the "rules that create freedom" layer — the clave you must orient to, the toque that determines appropriate movement, the chord changes that shape which notes work. Without constraint, there's no shared ground for improvisation to mean anything against.
+
+**Layer 5: Improvisation windows.** Where is novelty welcomed? How does it enter? How does it return to coherence? A jazz solo has a defined window — the form cycles, your turn comes, you play, you hand it off. A capoeira game has moments of opening where unexpected moves are possible and moments where the structure tightens. The container needs both stability and openings, and it needs the transitions between them to be legible.
+
+**Layer 6: Repair mechanics.** What happens when someone falls out? How do you re-enter? How does conflict get metabolized without destroying the container? This is the layer that separates resilient systems from brittle ones. In a roda, a stumble becomes a movement. In jazz, a wrong note becomes a choice. The repair capacity — the system's ability to absorb perturbation and continue — is what makes the "no error state" principle operational.
+
+**Layer 7: Participation on-ramps.** How does a novice join safely? How does learning happen socially, inside the container, rather than in a separate classroom? The clapping at the edge of a roda. The nodding at the edge of a dance floor. The sitting-in at a jazz session. These aren't lesser forms of participation. They're the entry layer that makes the whole system permeable to new people without collapsing the experience for everyone else.
+
+**Layer 8: Meaning and ethic.** What is the container *for*? What does it protect? What does it refuse? This is the layer that prevents "protocol" from becoming "control." A roda has an ethic — play well, respect your partner, honor the music. A dance floor has an ethic — collective joy, not performance for an audience. Without this layer, you can have all the structure in the world and still produce something extractive or coercive. The ethic is what makes the container generative rather than merely organized.
+
+Eight layers. A checklist, really. And one that applies beyond the forms themselves. Any time you're designing a space where people need to coordinate, create, or transform together — a meeting format, a classroom structure, a software system, a community ritual — you can ask: does this have a shared timebase? Are the roles clear? Is there a signal vocabulary? Are the constraints generative? Where's the improvisation window? What's the repair mechanism? How do newcomers enter? What's the ethic?
+
+The forms answer all eight. Most of our contemporary coordination tools answer two or three at best.
+
+---
+
 ## A Thought Experiment
 
 Here's a mental exercise. Not data. Not even a qualitative study. Just a way of thinking out loud about what makes these forms distinctive — and what binds them together.
@@ -87,25 +115,25 @@ import DimensionScale from '../components/radar/DimensionScale.astro';
 import Figure from '../components/Figure.astro';
 import { RM_PRACTICES, OTHER_PRACTICES, PRACTICES } from '../data/practices';
 
-<Figure number="4.1" caption="Five choreo-musical forms mapped across five dimensions. Notice the full, similar shapes — these practices fill the space rather than specializing.">
+<Figure number="5.1" caption="Five choreo-musical forms mapped across five dimensions. Notice the full, similar shapes — these practices fill the space rather than specializing.">
   <OverlayChart practices={RM_PRACTICES} />
 </Figure>
 
 The five choreo-musical forms produce full shapes. They don't spike in one direction and collapse in another. Capoeira, the social dance floor, jazz, rumba — they all fill out across embodiment, relationality, interiority, emergence, and meaning-making. Not identically, but similarly. That similarity is the signal. That's what makes them a family.
 
-<Figure number="4.2" caption="Other technologies of remembering. Each is valuable — but each specializes, producing spiky shapes rather than full ones.">
+<Figure number="5.2" caption="Other technologies of remembering. Each is valuable — but each specializes, producing spiky shapes rather than full ones.">
   <OverlayChart practices={OTHER_PRACTICES} />
 </Figure>
 
 Now look at what happens when we zoom in on a single dimension.
 
-<Figure number="4.3" caption="Emergence: where practices fall on the dimension of creating together in the moment.">
+<Figure number="5.3" caption="Emergence: where practices fall on the dimension of creating together in the moment.">
   <DimensionScale dimensionIndex={0} practices={PRACTICES} />
 </Figure>
 
 The choreo-musical forms cluster at the top of the emergence scale. This isn't coincidental — emergence is what they're *for*. The roda, the dance floor, the jazz combo, the rumba — these are systems designed to produce something that no individual participant planned. Other practices can produce emergence (team sports, psychedelics), but it's incidental to their structure, not central.
 
-<Figure number="4.4" caption="Embodiment: the body as a site of knowing.">
+<Figure number="5.4" caption="Embodiment: the body as a site of knowing.">
   <DimensionScale dimensionIndex={3} practices={PRACTICES} />
 </Figure>
 
