@@ -27,11 +27,18 @@ Flat list. Chapter titles only. No nesting. Reorder freely; chapters do not own 
 
 ## Last-session note
 
-**2026-05-05** — Workshop infrastructure scaffolded. `claims.md` seeded with 12 proposed claims drawn from manifesto + technologies-of-remembering map. `glossary.md` seeded from existing glossary, trimmed to one-line definitions for agent anchoring. `AGENT.md` standing instruction written. `not-this-book.md` awaiting first pass. Next session: prune claims to the 6-10 that feel actually load-bearing, write thesis paragraph above, write `not-this-book.md`.
+**2026-05-05** — Workshop infrastructure scaffolded. `claims.md` seeded with 12 proposed claims drawn from manifesto + technologies-of-remembering map. `glossary.md` seeded from existing glossary, trimmed to one-line definitions for agent anchoring. `AGENT.md` standing instruction written. `not-this-book.md` awaiting first pass.
+
+**2026-05-05 (later)** — First inbox capture arrived: `inbox/2026-05-05-throughline-remembering.md`. Substantial — names *re-membering* as the book's throughline; refines C-05 framing; introduces C-13 (musicking-as-political-philosophy) and candidate C-14 (three-faces sketch). Throughline added to top of `claims.md`. Glossary tentatively expanded with `re-membering`, `musicking`, `ecologies of practice` (last two flagged as candidates).
+
+Next session: triage the inbox item formally (move to `fragments/`), prune claims, write thesis paragraph above, write `not-this-book.md`.
 
 ## Currently blocked / unresolved
 
 - Thesis paragraph not yet written (this file).
 - `not-this-book.md` is a stub.
 - Claims are all `proposed` — none have been promoted to `active` yet. First triage pass needed.
-- No fragments exist yet — the loop hasn't been tested with a real input.
+- Inbox has one unprocessed item awaiting formal triage to `fragments/`.
+- Open from inbox: does "ecologies of practice" get a named role, or stay background framing?
+- Open from inbox: is the three-faces sketch (C-14) load-bearing, or scaffolding to discard?
+- Open from inbox: how to invoke the liberalism / musicking parallel without competitive framing — likely a `not-this-book.md` line.

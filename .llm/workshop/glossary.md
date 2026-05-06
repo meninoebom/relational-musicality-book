@@ -4,7 +4,10 @@ One line each. Terms whose meaning in this book is **load-bearing** and not gene
 
 - **relational musicality**: the human capacity to exchange information through time in ways that transform participants by coordinating attention, action, feeling, and meaning. Not musical skill or taste.
 - **technology of remembering**: a practice that restores integration where civilizational specialization has separated things (e.g., mind from body, self from other).
+- **re-membering**: the literal sense of remembering — putting back together what gets dismembered. The book's throughline. A structural counter-process to what analytical and conceptual thinking do as their function, not a sentimental return.
 - **dismemberment**: what specialization does — separating mind/body, self/other, art/therapy/governance into bounded domains.
+- **musicking** (Christopher Small): treating music as a verb — what people *do* together — rather than a noun. In this book, also: the embodied political philosophy and social psychology that choreo-musical rituals enact through their shape. *(Candidate; awaiting author confirmation that the term gets a named role.)*
+- **ecologies of practice** (John Vervaeke): the genus of practices that do remembering work; contemplative practices and movement practices are species inside it. *(Candidate; open question whether the term gets a named role in the book or stays as background framing.)*
 - **tyranny of sequential cognition (TSC)**: the structural condition in which sequential processing is treated as the only valid mode of intelligence.
 - **the three orientations**: outward (computation), inward (contemplation), between (relationality). Not three intelligences; not exhaustive — "at least three."
 - **computation**: specifically, what a machine can replicate. We called *people* "computers" before we built machines to do it.
