@@ -2,12 +2,13 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
-<BaseLayout title="Technologies of Remembering">
+<BaseLayout title="Relational Musicality">
   <main class="cover">
     <div class="cover-content">
       <p class="cover-kicker">A short book by Brandon Brown</p>
-      <h1 class="cover-title">Technologies of Remembering</h1>
-      <p class="cover-subtitle">
+      <h1 class="cover-title">Relational Musicality</h1>
+      <p class="cover-subtitle">A Technology of Remembering</p>
+      <p class="cover-description">
         How Afro-diasporic music and dance reintegrate us
         with ourselves, with others, and with the world.
       </p>
@@ -51,7 +52,17 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   }
 
   .cover-subtitle {
+    font-family: var(--font-heading);
     font-size: var(--text-lg);
+    font-weight: 400;
+    font-style: italic;
+    color: var(--text-body);
+    line-height: 1.3;
+    margin-bottom: var(--space-md);
+  }
+
+  .cover-description {
+    font-size: var(--text-base);
     color: var(--text-muted);
     line-height: 1.5;
     margin-bottom: var(--space-2xl);
@@ -90,7 +101,12 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
     .cover-subtitle {
       animation: cover-fade 0.8s ease both;
-      animation-delay: 0.6s;
+      animation-delay: 0.5s;
+    }
+
+    .cover-description {
+      animation: cover-fade 0.8s ease both;
+      animation-delay: 0.7s;
     }
 
     .cover-cta {

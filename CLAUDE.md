@@ -1,8 +1,8 @@
-# Technologies of Remembering — Web Book
+# Relational Musicality — Web Book
 
 ## What This Is
 
-A short web book by Brandon Brown exploring Afro-diasporic choreo-musical practices as uniquely integrative "technologies of remembering." Built with Astro + MDX.
+A short web book by Brandon Brown titled *Relational Musicality: A Technology of Remembering*. The argument: there is a category of practices called *technologies of remembering* that re-integrate what modern civilization fragments; relational musicality (embodied, rhythmic, collective coordination in shared time) is one such technology, refined with particular sophistication in Afro-diasporic forms (capoeira, the social dance floor, jazz, rumba, bomba). Built with Astro + MDX.
 
 ## Stack
 
