@@ -51,14 +51,38 @@ When writing or editing chapter prose, follow Brandon's actual voice — not gen
 
 ### What to avoid
 
-- **"Not X; it's Y" as a binary definitional move.** This is Claude's default rhetoric — assumes the reader is wrong and corrects them. Brandon's mode is: "look at this with me, and notice what becomes visible."
-- **Competitive framing.** Don't rank practices, don't impugn alternatives. The goal is understanding what's distinctive, not what's better.
+- **"Not X; it's Y" as a standalone rhetorical jab.** A short sentence whose only work is correcting what the reader presumably thought ("This isn't a conspiracy. It's a worldview.") is Claude's default rhetoric. Brandon's mode is "look at this with me, and notice what becomes visible." That said, *not-X-but-Y* inside a longer sentence doing genuine analytical work is fine — the test is whether you can imagine a serious nonfiction writer like Greg Grandin, Barbara Ehrenreich, Chimamanda Adichie, or Yuval Noah Harari writing it. If you can't, restructure. Twitter-jab cheapness without grappling with complexity is what gets cut.
+
+- **Triplet anaphora.** "It does not need X. It does not need Y. It does not need Z." Three identical sentence openings in a row, used to insist rather than to list. Either vary the rhythm or collapse into a single sentence with commas.
+
+- **Staccato fragment closes.** "Three orientations. We are developed in the first. Rediscovering the second. Illiterate in the third." A chain of short fragments at a section's end, used to land a punch. Short declarative landings are fine and Brandon uses them, but they come *after* exploration and they don't stack four-deep. Flow these into a single sentence.
+
+- **Em dashes as rhythm.** Em dashes that set up a pause-then-deliver beat ("The sound shifts — and the room knows it") are an AI cadence. Use commas, colons, parentheses, or restructure the sentence. Genuine parentheticals are okay but rare. Em dashes in titles and metadata are unconstrained.
+
+- **Competitive framing.** Don't rank practices, don't impugn alternatives. The goal is understanding what is distinctive, not what is better.
+
 - **Front-loaded thesis.** Don't open a section with the conclusion. Open with observation, build through description, arrive at the point.
+
 - **Excessive distinguishing.** The "this is X and not Y, this is Y and not Z" pattern creates a definitional feel. Prefer describing what something IS with enough specificity that the reader understands what it isn't without being told.
 
 ### The underlying stance
 
-Brandon writes as someone who is **trying to understand**, not someone who has figured it out. The reader is invited into the inquiry. Individual sentences can be confident — but the arc is exploratory. "I'm showing you how I arrived at these claims and inviting you to evaluate them."
+Brandon writes as someone who is **trying to understand**, not someone who has figured it out. The reader is invited into the inquiry. Individual sentences can be confident, but the arc is exploratory. "I'm showing you how I arrived at these claims and inviting you to evaluate them."
+
+### Accessibility aspiration
+
+The book aims for the readability of Yuval Noah Harari or Jared Diamond: complex ideas in plain language, accessible to readers who do not already share the author's vocabulary. Coined or specialist terms (*relational musicality*, *technologies of remembering*, *agonistic reappropriation*, *co-regulated music*, *musicking*) should be introduced with a definition the reader can hold immediately on first encounter. Watch jargon. Trust the reader to follow without needing to be impressed by sophisticated framing.
+
+### Calibrating voice work
+
+When revising prose across multiple chapters:
+
+1. Pick one chapter as the calibration piece. Don't rewrite all of them blind.
+2. Before applying changes, show before/after on two or three representative passages with the rule each rewrite is applying.
+3. Get author signoff on the calibration before proceeding to the rest.
+4. Verify the build (`npx astro build`) after each chapter rewrite.
+
+This avoids the failure mode where a 3,000-word rewrite arrives cold and the author has to redline every move without knowing what rules were being applied.
 
 ## Content Source
 
