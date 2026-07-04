@@ -5,3 +5,6 @@ dist
 # Workflow scratch — staged drafts and integration notes from Claude Desktop conversations.
 # Not book content; lives outside git per project convention.
 integrating-context-from-claude-desktop/
+
+# AI agent scratch (session-ephemeral, per directory convention)
+.llm/
